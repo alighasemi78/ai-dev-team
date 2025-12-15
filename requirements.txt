@@ -1,5 +1,3 @@
 crewai
 crewai-tools
-litellm
-fastapi
-uvicorn
+litellm[proxy]
