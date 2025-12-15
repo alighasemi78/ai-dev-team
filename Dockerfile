@@ -1,21 +1,27 @@
-FROM python:3.11
+# We use the Nvidia CUDA base image for maximum compatibility with bitsandbytes
+FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04
+
+# Set up Python environment
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y \
+    python3.11 \
+    python3-pip \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Alias python3 to python
+RUN ln -s /usr/bin/python3.11 /usr/bin/python
 
 WORKDIR /app
 
-# Prevent Python buffering (makes logs appear instantly)
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Install system basics
-RUN apt-get update && apt-get install -y git build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
+# Install dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-COPY . .
+# Copy the app code
+COPY app/ ./app/
 
-# Create output directory
-RUN mkdir -p output
+# Create a volume directory for the models so we don't download them every time
+RUN mkdir -p /root/.cache/huggingface
 
-CMD ["python", "main.py"]
+CMD ["python", "app/main.py"]

@@ -1,31 +1,21 @@
 services:
-  # The Brain (Runs the Model)
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama_brain
-    volumes:
-      - ollama_data:/root/.ollama
-    ports:
-      - "11434:11434"
-    restart: always
-
-  # The Team (Runs your Python Code)
-  dev-team:
+  llm-engine:
     build: .
-    container_name: ai_dev_team
-    volumes:
-      - ./output:/app/output
-    depends_on:
-      - ollama
+    runtime: nvidia # CRITICAL: This requires the NVIDIA Container Toolkit
     environment:
-      # Pointing to the 'ollama' service defined above
-      - OPENAI_API_BASE=http://ollama:11434/v1
-      - OPENAI_API_KEY=NA
-      - OPENAI_MODEL_NAME=qwen2.5-coder:7b
-      - LITELLM_TELEMETRY=False
-      - CREWAI_TELEMETRY_OPT_OUT=True
-      - OTEL_SDK_DISABLED=True
-
-# This tells Docker to create the persistent volume for Ollama
-volumes:
-  ollama_data:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      # Helpful for debugging CUDA errors
+      - CUDA_LAUNCH_BLOCKING=1
+    volumes:
+      # Map the container's cache to a local folder so you download the model only once
+      - ./hf_cache:/root/.cache/huggingface
+      # Map the code so you can edit locally and run instantly
+      - ./app:/app/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
