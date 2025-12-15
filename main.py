@@ -4,8 +4,7 @@ from crewai import Agent, Task, Crew, Process, LLM
 # 1. SETUP LOCAL LLM
 # Note base_url points to the docker service name "ollama"
 my_llm = LLM(
-    model="ollama/qwen2.5-coder:7b",
-    base_url="http://ollama:11434",
+    model="ollama/qwen2.5-coder:7b", base_url="http://ollama:11434", verbose=False
 )
 
 # 2. DEFINE AGENTS

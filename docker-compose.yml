@@ -22,6 +22,9 @@ services:
       - OPENAI_API_BASE=http://ollama:11434/v1
       - OPENAI_API_KEY=NA
       - OPENAI_MODEL_NAME=qwen2.5-coder:7b
+      - LITELLM_TELEMETRY=False
+      - CREWAI_TELEMETRY_OPT_OUT=True
+      - OTEL_SDK_DISABLED=True
 
 # This tells Docker to create the persistent volume for Ollama
 volumes:
