@@ -1,0 +1,24 @@
+services:
+  # The Brain (Runs the Model)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_brain
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    restart: always
+
+  # The Team (Runs your Python Code)
+  dev-team:
+    build: .
+    container_name: ai_dev_team
+    volumes:
+      - ./output:/app/output
+    depends_on:
+      - ollama
+    environment:
+      # Pointing to the 'ollama' service defined above
+      - OPENAI_API_BASE=http://ollama:11434/v1
+      - OPENAI_API_KEY=NA
+      - OPENAI_MODEL_NAME=qwen2.5-coder:7b
