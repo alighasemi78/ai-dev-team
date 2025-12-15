@@ -1,8 +1,7 @@
 crewai
 crewai-tools
-litellm
+litellm[proxy]
 fastapi
-fastapi-sso
 uvicorn
 apscheduler
 email-validator
