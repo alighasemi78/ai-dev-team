@@ -4,3 +4,4 @@ litellm
 fastapi
 uvicorn
 apscheduler
+email-validator
