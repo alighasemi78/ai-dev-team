@@ -1,5 +1,5 @@
-from app.llm_engine import LLMEngine
-from app.agent import Agent
+from llm_engine import LLMEngine
+from agent import Agent
 
 
 def main():
